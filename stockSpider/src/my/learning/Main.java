@@ -11,16 +11,19 @@ public class Main {
         UrlHelper urlHelper = new UrlHelper();
         String s = null;
         try {
-            ArrayList stockCodes = StockListReader.Read("src/stockList.txt");
+            ArrayList stockCodes = StockListReader.ReadFile("src/stockList.txt");
             System.out.println(stockCodes.size());
-            s = urlHelper.doGet("http://hq.sinajs.cn/list=sh600519");
+            for(int i=0;i<10;i++){
+                String stockCode = stockCodes.get(i).toString();
+                System.out.println("get data"+stockCode);
+                s = urlHelper.doGet("http://hq.sinajs.cn/list="+stockCode);
+                System.out.print(s);
+            }
+
         } catch (Exception e) {
             System.out.println("error occurs...");
             e.printStackTrace();
         }
-
-
-        System.out.print(s);
         System.out.println(Charset.defaultCharset());
         // write your code here
     }

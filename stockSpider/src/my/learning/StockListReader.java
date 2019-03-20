@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class StockListReader {
-    public static ArrayList Read(String filePath) {
+    public static ArrayList ReadFile(String filePath) {
         System.out.println("start read file...");
         ArrayList aStockCodes = new ArrayList<String>();
 
@@ -21,7 +21,7 @@ public class StockListReader {
                 for (String stock:aStockList
                 ) {
                     String[] stockCode = stock.split("\\.");
-                    aStockCodes.add(stockCode[0]);
+                    aStockCodes.add(stockCode[1].toLowerCase()+stockCode[0]);
                 }
             }
         } catch (IOException e) {
