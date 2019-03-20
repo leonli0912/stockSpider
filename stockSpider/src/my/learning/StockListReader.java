@@ -2,33 +2,30 @@ package my.learning;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class StockListReader {
     public static ArrayList Read(String filePath) {
         System.out.println("start read file...");
-        String[] aStockList;
+        ArrayList aStockCodes = new ArrayList<String>();
+
         try (FileReader fileReader = new FileReader(filePath);
              BufferedReader bufferedReader = new BufferedReader(fileReader) // 建立一个对象，它把文件内容转成计算机能读懂的语言
         ) {
             String line;
             int lineIndex = 0;
-
             while ((line = bufferedReader.readLine()) != null) {
                 // 一次读入一行数据
-                System.out.println("line:"+lineIndex);
-                //System.out.println(line);
-                aStockList = line.split(",");
+                String[] aStockList = line.split(",");
                 System.out.println(aStockList.length);
+                for (String stock:aStockList
+                ) {
+                    String[] stockCode = stock.split("\\.");
+                    aStockCodes.add(stockCode[0]);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        ArrayList aStockCodes = new ArrayList<String>();
-        for (String stock:aStockList
-             ) {
-            String stockCode = stock.split(".")[0];
-            aStockCodes.add(stockCode);
         }
         return aStockCodes;
     }
