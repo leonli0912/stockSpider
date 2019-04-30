@@ -3,6 +3,7 @@ package my.learning;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.sql.*;
 
 public class Main {
 
@@ -11,16 +12,18 @@ public class Main {
         String STOCKFIELDS = "name,today_open,lastday_close,today_close,highest,lowest,buy1,sold1,trade_volume,trade_amount,change,date,time";
         UrlHelper urlHelper = new UrlHelper();
         String s = null;
+        MySqlHelper mysqlHelper;
+        RealStock realStock;
         try {
+            mysqlHelper = new MySqlHelper("","","");
             ArrayList stockCodes = StockListReader.ReadFile("src/stockList.txt");
-
-            for(int i=0;i<10;i++){
+            realStock = new RealStock();
+            for(int i=0;i<1;i++){
                 String stockCode = stockCodes.get(i).toString();
-                System.out.println("get data"+stockCode);
-                s = urlHelper.doGet("http://hq.sinajs.cn/list="+stockCode);
-                String result = s.substring(s.indexOf("=")+1).replace("\"", "");
-
-                System.out.print(result);
+                String stockHistory = realStock.getStockHistory(stockCode);
+                //realStock.getLatestPrice(stockCode);
+                mysqlHelper.updateHistory(stockCode,stockHistory);
+                //mysqlHelper.insertSingleHQ(stockCode,result);
             }
 
         } catch (Exception e) {
