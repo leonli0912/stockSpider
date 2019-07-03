@@ -21,8 +21,10 @@ public class Main {
             for(int i=0;i<1;i++){
                 String stockCode = stockCodes.get(i).toString();
                 String stockHistory = realStock.getStockHistory(stockCode);
-                //realStock.getLatestPrice(stockCode);
+                //System.out.print(stockHistory);
                 mysqlHelper.updateHistory(stockCode,stockHistory);
+
+                //realStock.getLatestPrice(stockCode);
                 //mysqlHelper.insertSingleHQ(stockCode,result);
             }
 

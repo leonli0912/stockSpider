@@ -30,4 +30,13 @@ public class RealStock {
         System.out.print(result + "\n");
         return result;
     }
+
+    public String getHistoryDividend(String stockCode) throws java.lang.Exception{
+        final String BASEURL = "https://androidinvest.com/Stock/HistoryDividend/";
+        String requestUrl = BASEURL + stockCode;
+        String response = null;
+        response = urlHelper.doGet(requestUrl);
+        System.out.print("getStockHistory:" + response + "\n");
+        return response;
+    }
 }

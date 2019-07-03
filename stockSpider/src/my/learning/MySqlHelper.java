@@ -59,25 +59,31 @@ public class MySqlHelper {
     }
 
     public void updateHistory(String stockCode, String source) throws Exception {
+        final String MaxDateQuery = "SELECT DATE_FORMAT(max(date),\"%Y%m%d\") as MaxDate FROM myschema.stockhistory " +
+                "where id= '"+ stockCode + "'";
         String[] aClosePrice = source.split(",");
+        String sqlSharedStateMement = "insert into myschema.stockhistory(id,date,price)" +"values('" + stockCode + "',";
+        Date latestDate = null;
         Date date = new Date();
-        String sqlSharedStateMement;
+        ResultSet queryDateResultSet =statement.executeQuery(MaxDateQuery);
+        while(queryDateResultSet.next()){
+            latestDate = new SimpleDateFormat("yyyyMMdd").parse(queryDateResultSet.getString("MaxDate"));
+        }
+        System.out.println(latestDate);
         DecimalFormat decimalFormat = new DecimalFormat("0.000");
         decimalFormat.setMaximumFractionDigits(3);
-
-        sqlSharedStateMement = "insert into myschema.stockhistory(id,date,price)" +
-                "values('" + stockCode + "',";
-
         for (String date_price : aClosePrice) {
             date = new SimpleDateFormat("yyyyMMdd").parse(date_price.split(":")[0].replace("_", ""));
+            if(date.compareTo(latestDate) <= 0 ){
+                break;
+            }
             String sdate = new SimpleDateFormat("yyyyMMdd").format(date) ;
             Double price = Double.parseDouble(date_price.split(":")[1].replace("\"", ""));
             String sqlStatemement = sqlSharedStateMement + sdate + "," + decimalFormat.format(price) + ")";
             System.out.println("excute sqlStateMement:" + sqlStatemement);
             statement.execute(sqlStatemement);
-
         }
-
+        connection.close();
     }
 
 }
