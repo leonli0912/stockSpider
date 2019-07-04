@@ -6,6 +6,7 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MySqlHelper {
     Connection connection;
@@ -15,15 +16,15 @@ public class MySqlHelper {
     public MySqlHelper(String url, String username, String password) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myschema", "root", "ly880912");
+            connection = DriverManager.getConnection(url,username,password);
             System.out.println("Database connected!");
             statement = connection.createStatement();
-            if (statement.execute("select * from myschema.stockhq")) {
+/*            if (statement.execute("select * from myschema.stockhq")) {
                 resultSet = statement.getResultSet();
             }
 
             while (resultSet.next())
-                System.out.println(resultSet);
+                System.out.println(resultSet);*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,14 +68,17 @@ public class MySqlHelper {
         Date date = new Date();
         ResultSet queryDateResultSet =statement.executeQuery(MaxDateQuery);
         while(queryDateResultSet.next()){
-            latestDate = new SimpleDateFormat("yyyyMMdd").parse(queryDateResultSet.getString("MaxDate"));
+            if (null != queryDateResultSet.getString("MaxDate")){
+                latestDate = new SimpleDateFormat("yyyyMMdd").parse(queryDateResultSet.getString("MaxDate"));
+            }
+
         }
         System.out.println(latestDate);
         DecimalFormat decimalFormat = new DecimalFormat("0.000");
         decimalFormat.setMaximumFractionDigits(3);
         for (String date_price : aClosePrice) {
             date = new SimpleDateFormat("yyyyMMdd").parse(date_price.split(":")[0].replace("_", ""));
-            if(date.compareTo(latestDate) <= 0 ){
+            if((latestDate != null)&&(date.compareTo(Objects.requireNonNull(latestDate)) <= 0)){
                 break;
             }
             String sdate = new SimpleDateFormat("yyyyMMdd").format(date) ;

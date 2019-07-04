@@ -1,5 +1,7 @@
 package my.learning;
 
+import java.util.ArrayList;
+
 public class RealStock {
     UrlHelper urlHelper = new UrlHelper();
 
@@ -30,8 +32,20 @@ public class RealStock {
         System.out.print(result + "\n");
         return result;
     }
+    public String getHistoryDividend(String stockCode) {
+        String result = "";
+        /*String rawHtml = "";
+        try {
+            rawHtml = getHistoryDividendRaw(stockCode);
+        }catch (java.lang.Exception e){
+            System.out.print("Get History Dividend Failed");
+        }
+        ParseHtml(rawHtml);
+        */
+        return  result;
+    }
 
-    public String getHistoryDividend(String stockCode) throws java.lang.Exception{
+    private String getHistoryDividendRaw(String stockCode) throws java.lang.Exception{
         final String BASEURL = "https://androidinvest.com/Stock/HistoryDividend/";
         String requestUrl = BASEURL + stockCode;
         String response = null;
