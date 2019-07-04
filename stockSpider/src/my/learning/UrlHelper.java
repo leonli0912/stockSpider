@@ -16,7 +16,12 @@ public class UrlHelper {
         proxyPort = null;
         proxyHost = null;
     }
-
+    public UrlHelper(String scharset){
+        charset = scharset;
+    }
+    public void setCharset(String scharset){
+        charset = scharset;
+    }
     public String doGet(String url) throws Exception {
 
         URL localURL = new URL(url);
@@ -39,7 +44,7 @@ public class UrlHelper {
 
         try {
             inputStream = httpURLConnection.getInputStream();
-            inputStreamReader = new InputStreamReader(inputStream,"GB2312");
+            inputStreamReader = new InputStreamReader(inputStream,"UTF-8");//GB2312 for get historyPrice
             reader = new BufferedReader(inputStreamReader);
 
             while ((tempLine = reader.readLine()) != null) {

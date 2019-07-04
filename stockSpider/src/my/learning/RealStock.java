@@ -1,9 +1,13 @@
 package my.learning;
 
 import java.util.ArrayList;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class RealStock {
-    UrlHelper urlHelper = new UrlHelper();
+    UrlHelper urlHelper = new UrlHelper("GBK");
 
     public RealStock() {
 
@@ -34,21 +38,30 @@ public class RealStock {
     }
     public String getHistoryDividend(String stockCode) {
         String result = "";
-        /*String rawHtml = "";
+        String rawHtml = "";
         try {
             rawHtml = getHistoryDividendRaw(stockCode);
         }catch (java.lang.Exception e){
             System.out.print("Get History Dividend Failed");
         }
         ParseHtml(rawHtml);
-        */
+
         return  result;
     }
-
+    private void ParseHtml(String htmlText){
+        Document document = Jsoup.parse(htmlText);
+        Elements allElements = document.getElementsByClass("mt-3");
+        allElements.stream().forEach((element)-> {
+            if (element.tag().toString() == "ul"){
+                System.out.print(element.text());
+            }
+        });
+    }
     private String getHistoryDividendRaw(String stockCode) throws java.lang.Exception{
         final String BASEURL = "https://androidinvest.com/Stock/HistoryDividend/";
         String requestUrl = BASEURL + stockCode;
         String response = null;
+        urlHelper.setCharset("UTF-8");
         response = urlHelper.doGet(requestUrl);
         System.out.print("getStockHistory:" + response + "\n");
         return response;

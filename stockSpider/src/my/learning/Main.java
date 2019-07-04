@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         DBConfiguration.SetDBType("aliyun");
         String STOCKFIELDS = "name,today_open,lastday_close,today_close,highest,lowest,buy1,sold1,trade_volume,trade_amount,change,date,time";
-        UrlHelper urlHelper = new UrlHelper();
+        UrlHelper urlHelper = new UrlHelper("GBK");
         String s = null;
         MySqlHelper mysqlHelper;
         RealStock realStock;
@@ -22,7 +22,7 @@ public class Main {
             for(int i=0;i<1;i++){
                 String stockCode = stockCodes.get(i).toString();
                 String stockHistory = realStock.getStockHistory(stockCode);
-                mysqlHelper.updateHistory(stockCode,stockHistory);
+                //mysqlHelper.updateHistory(stockCode,stockHistory);
                 realStock.getHistoryDividend(stockCode);
             }
 
