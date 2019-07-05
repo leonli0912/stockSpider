@@ -64,7 +64,7 @@ public class RealStock {
 }
 
     private String[] ParseText(String longText) {
-        if ("" == longText) {
+        if (longText.equals("")) {
             return null;
         }
         String[] dividends = longText.split("。");

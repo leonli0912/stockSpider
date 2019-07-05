@@ -94,11 +94,15 @@ public class MySqlHelper {
         final String sqlSharedStateMement = "insert into myschema.stockdividend(id,dividendId,dividendDetail)" +
                 "value('" + stockCode + "',";
         int divId = 0;
+        if (dividends == null){
+            return;
+        }
         for (int i=0;i<dividends.length;i++){
             if (dividends[i]!=null){
-                String sqlStatemement = sqlSharedStateMement + divId + "," + dividends[i].trim() + ")";
+                String sqlStatemement = sqlSharedStateMement + divId + "," + "'"+dividends[i].trim() +"'"+ ")";
                 System.out.println("excute sqlStateMement:" + sqlStatemement);
                 divId++;
+                statement.execute(sqlStatemement);
             }
         }
     }
