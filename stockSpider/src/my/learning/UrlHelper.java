@@ -14,7 +14,7 @@ public class UrlHelper {
     {
         charset = "GBK";
         proxyPort = 8080;
-        proxyHost = "proxy.phl.sap.corp";
+        proxyHost = "proxy.sin.sap.corp";
     }
     public UrlHelper(String scharset){
         charset = scharset;

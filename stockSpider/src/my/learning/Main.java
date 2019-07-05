@@ -19,10 +19,11 @@ public class Main {
             mysqlHelper = new MySqlHelper(DBConfiguration.url, DBConfiguration.userName, DBConfiguration.password);
             ArrayList stockCodes = StockListReader.ReadFile("src/stockList.txt");
             realStock = new RealStock();
-            for(int i=7;i<100;i++){
+            for(int i=100;i<3275;i++){
                 String stockCode = stockCodes.get(i).toString();
                 //String stockHistory = realStock.getStockHistory(stockCode);
                 //mysqlHelper.updateHistory(stockCode,stockHistory);
+                Thread.sleep((long)(Math.random() * 20000));
                 mysqlHelper.updateDivident(stockCode,realStock.getHistoryDividend(stockCode));
             }
 
