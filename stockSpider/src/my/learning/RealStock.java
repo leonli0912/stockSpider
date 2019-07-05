@@ -1,6 +1,8 @@
 package my.learning;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,28 +38,40 @@ public class RealStock {
         System.out.print(result + "\n");
         return result;
     }
-    public String getHistoryDividend(String stockCode) {
-        String result = "";
+
+    public String[] getHistoryDividend(String stockCode) {
+        String[] result;
         String rawHtml = "";
         try {
             rawHtml = getHistoryDividendRaw(stockCode);
-        }catch (java.lang.Exception e){
+        } catch (java.lang.Exception e) {
             System.out.print("Get History Dividend Failed");
         }
-        ParseHtml(rawHtml);
-
-        return  result;
+        result = ParseHtml(rawHtml);
+        return result;
     }
-    private void ParseHtml(String htmlText){
+
+    private String[] ParseHtml(String htmlText) {
+        String[] result = new String[100];
         Document document = Jsoup.parse(htmlText);
         Elements allElements = document.getElementsByClass("mt-3");
-        allElements.stream().forEach((element)-> {
-            if (element.tag().toString() == "ul"){
-                System.out.print(element.text());
+        for (Element element :allElements){
+            if (element.tag().toString().equals("ul")){
+                result =ParseText(element.text());
             }
-        });
+        }
+        return result;
+}
+
+    private String[] ParseText(String longText) {
+        if ("" == longText) {
+            return null;
+        }
+        String[] dividends = longText.split("。");
+        return dividends;
     }
-    private String getHistoryDividendRaw(String stockCode) throws java.lang.Exception{
+
+    private String getHistoryDividendRaw(String stockCode) throws java.lang.Exception {
         final String BASEURL = "https://androidinvest.com/Stock/HistoryDividend/";
         String requestUrl = BASEURL + stockCode;
         String response = null;

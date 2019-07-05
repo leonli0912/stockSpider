@@ -25,15 +25,14 @@ public class UrlHelper {
     public String doGet(String url) throws Exception {
 
         URL localURL = new URL(url);
-
         URLConnection connection = this.openConnection(localURL);
         HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
-
         httpURLConnection.setRequestProperty("Accept-Charset", charset);
         httpURLConnection.setRequestProperty("Content-Type", "application/javascript");
 
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
+        String inputCharset="";
         BufferedReader reader = null;
         StringBuffer resultBuffer = new StringBuffer();
         String tempLine = null;
@@ -44,7 +43,12 @@ public class UrlHelper {
 
         try {
             inputStream = httpURLConnection.getInputStream();
-            inputStreamReader = new InputStreamReader(inputStream,"UTF-8");//GB2312 for get historyPrice
+            if (charset == "GBK"){
+                inputCharset = "GB2312";
+            }else{
+                inputCharset = charset;
+            }
+            inputStreamReader = new InputStreamReader(inputStream,inputCharset);//GB2312 for get historyPrice
             reader = new BufferedReader(inputStreamReader);
 
             while ((tempLine = reader.readLine()) != null) {

@@ -90,4 +90,16 @@ public class MySqlHelper {
         connection.close();
     }
 
+    public void updateDivident(String stockCode,String[] dividends) throws java.sql.SQLException{
+        final String sqlSharedStateMement = "insert into myschema.stockdividend(id,dividendId,dividendDetail)" +
+                "value('" + stockCode + "',";
+        int divId = 0;
+        for (int i=0;i<dividends.length;i++){
+            if (dividends[i]!=null){
+                String sqlStatemement = sqlSharedStateMement + divId + "," + dividends[i].trim() + ")";
+                System.out.println("excute sqlStateMement:" + sqlStatemement);
+                divId++;
+            }
+        }
+    }
 }
