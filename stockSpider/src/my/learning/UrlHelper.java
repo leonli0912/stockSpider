@@ -14,7 +14,7 @@ public class UrlHelper {
     {
         charset = "GBK";
         proxyPort = 8080;
-        proxyHost = "proxy.sin.sap.corp";
+        proxyHost = null;//"proxy.sin.sap.corp";
     }
     public UrlHelper(String scharset){
         charset = scharset;
@@ -26,7 +26,7 @@ public class UrlHelper {
 
         URL localURL = new URL(url);
         URLConnection connection = this.openConnection(localURL);
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        //connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
 
         HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
         System.out.println("Proxy? " + httpURLConnection.usingProxy());

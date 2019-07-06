@@ -17,13 +17,16 @@ public class Main {
         RealStock realStock;
         try {
             mysqlHelper = new MySqlHelper(DBConfiguration.url, DBConfiguration.userName, DBConfiguration.password);
-            ArrayList stockCodes = StockListReader.ReadFile("src/stockList.txt");
+            String root = mysqlHelper.getClass().getResource("/").getPath();
+
+            ArrayList stockCodes = StockListReader.ReadFile(root+"stockList.txt");
             realStock = new RealStock();
-            for(int i=100;i<3275;i++){
+            for(int i=200;i<250;i++){
                 String stockCode = stockCodes.get(i).toString();
                 //String stockHistory = realStock.getStockHistory(stockCode);
                 //mysqlHelper.updateHistory(stockCode,stockHistory);
                 Thread.sleep((long)(Math.random() * 20000));
+                System.out.println("number:..."+i);
                 mysqlHelper.updateDivident(stockCode,realStock.getHistoryDividend(stockCode));
             }
 

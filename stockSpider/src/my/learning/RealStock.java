@@ -77,7 +77,7 @@ public class RealStock {
         String response = null;
         urlHelper.setCharset("UTF-8");
         response = urlHelper.doGet(requestUrl);
-        System.out.print("getStockHistory:" + response + "\n");
+        System.out.print("getStockHistory:" + stockCode + "\n");
         return response;
     }
 }
