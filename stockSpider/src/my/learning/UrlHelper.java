@@ -5,33 +5,45 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.ArrayList;
+
 
 public class UrlHelper {
     private String charset;
     private String proxyHost;
     private Integer proxyPort;
+    private boolean isRollingIp;
+    private Integer requestCounter;
+    private ArrayList<MyProxy> proxies;
 
     {
         charset = "GBK";
         proxyPort = 8080;
         proxyHost = null;//"proxy.sin.sap.corp";
+        isRollingIp = false;
+        requestCounter=0;
     }
     public UrlHelper(String scharset){
         charset = scharset;
+    }
+    public UrlHelper(String scharset,Boolean bRollingIp){
+        charset = scharset;
+        isRollingIp = bRollingIp;
+        proxyPool = new ArrayList<MyProxy>();
     }
     public void setCharset(String scharset){
         charset = scharset;
     }
     public String doGet(String url) throws Exception {
 
-        URL localURL = new URL(url);
+        URL localURL = new URL(null, url, new sun.net.www.protocol.https.Handler());
         URLConnection connection = this.openConnection(localURL);
-        //connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
 
         HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
-        System.out.println("Proxy? " + httpURLConnection.usingProxy());
-        httpURLConnection.setRequestProperty("Accept-Charset", charset);
-        httpURLConnection.setRequestProperty("Content-Type", "application/javascript");
+
+        //httpURLConnection.setRequestProperty("Accept-Charset", charset);
+        //httpURLConnection.setRequestProperty("Content-Type", "application/javascript");
 
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
@@ -79,12 +91,23 @@ public class UrlHelper {
 
     private URLConnection openConnection(URL localURL) throws IOException {
         URLConnection connection;
+
+        if (isRollingIp&&requestCounter>=10){
+            //setProxy();
+            requestCounter=0;
+        }
         if (proxyHost != null && proxyPort != null) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
             connection = localURL.openConnection(proxy);
+            requestCounter++;
         } else {
             connection = localURL.openConnection();
         }
         return connection;
+    }
+
+    private void initProxyPool() throws Exception{
+        ProxyPool pp = new ProxyPool();
+
     }
 }

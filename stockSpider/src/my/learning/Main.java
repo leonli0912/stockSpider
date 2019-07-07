@@ -21,7 +21,8 @@ public class Main {
 
             ArrayList stockCodes = StockListReader.ReadFile(root+"stockList.txt");
             realStock = new RealStock();
-            for(int i=200;i<250;i++){
+            for(int i=250;i<251;i++){
+            //for(int i=1;i<2;i++){
                 String stockCode = stockCodes.get(i).toString();
                 //String stockHistory = realStock.getStockHistory(stockCode);
                 //mysqlHelper.updateHistory(stockCode,stockHistory);
