@@ -13,7 +13,7 @@ public class UrlHelper {
     private String proxyHost;
     private Integer proxyPort;
     private boolean isRollingIp;
-    private Integer requestCounter;
+    private static Integer requestCounter;
     private ArrayList<MyProxy> proxies;
 
     {
@@ -26,14 +26,28 @@ public class UrlHelper {
     public UrlHelper(String scharset){
         charset = scharset;
     }
+
     public UrlHelper(String scharset,Boolean bRollingIp){
         charset = scharset;
         isRollingIp = bRollingIp;
-        proxyPool = new ArrayList<MyProxy>();
+        if (bRollingIp){
+            try {
+                initProxyPool();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            int index = (int)Math.random()*((proxies.size() - 0) + 1);
+            MyProxy newProxy = proxies.get(index);
+            proxyHost = newProxy.proxyHost;
+            proxyPort = newProxy.proxyPort;
+            System.out.print("set proxy to :"+proxyHost+","+proxyPort);
+        }
     }
+
     public void setCharset(String scharset){
         charset = scharset;
     }
+
     public String doGet(String url) throws Exception {
 
         URL localURL = new URL(null, url, new sun.net.www.protocol.https.Handler());
@@ -93,7 +107,7 @@ public class UrlHelper {
         URLConnection connection;
 
         if (isRollingIp&&requestCounter>=10){
-            //setProxy();
+            switchProxy();
             requestCounter=0;
         }
         if (proxyHost != null && proxyPort != null) {
@@ -108,6 +122,14 @@ public class UrlHelper {
 
     private void initProxyPool() throws Exception{
         ProxyPool pp = new ProxyPool();
+        proxies = pp.getProxies();
+    }
 
+    private void switchProxy(){
+        int index = (int)Math.random()*((proxies.size() - 0) + 1);
+        MyProxy newProxy = proxies.get(index);
+        proxyHost = newProxy.proxyHost;
+        proxyPort = newProxy.proxyPort;
+        System.out.print("switch proxy to :"+proxyHost+","+proxyPort);
     }
 }

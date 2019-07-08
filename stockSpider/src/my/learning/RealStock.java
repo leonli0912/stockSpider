@@ -9,7 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class RealStock {
-    UrlHelper urlHelper = new UrlHelper("GBK");
+    UrlHelper urlHelper = new UrlHelper("GBK",true);
 
     public RealStock() {
 
