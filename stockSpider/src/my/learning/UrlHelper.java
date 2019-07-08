@@ -70,10 +70,10 @@ public class UrlHelper {
 
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
-        String inputCharset="";
+        String inputCharset;
         BufferedReader reader = null;
         StringBuffer resultBuffer = new StringBuffer();
-        String tempLine = null;
+        String tempLine;
         //响应失败
         try {
             if (httpURLConnection.getResponseCode() >= 300) {
@@ -138,7 +138,7 @@ public class UrlHelper {
         return connection;
     }
 
-    private void initProxyPool() throws Exception{
+    private void initProxyPool() {
         ProxyPool pp = new ProxyPool();
         proxies = pp.getProxies();
     }
