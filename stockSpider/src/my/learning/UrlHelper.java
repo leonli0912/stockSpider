@@ -23,10 +23,20 @@ public class UrlHelper {
         isRollingIp = false;
         requestCounter=0;
     }
+
+    /**
+     * constructor
+     * @param scharset
+     */
     public UrlHelper(String scharset){
         charset = scharset;
     }
 
+    /**
+     * overload constructor with rolling ip option
+     * @param scharset
+     * @param bRollingIp
+     */
     public UrlHelper(String scharset,Boolean bRollingIp){
         charset = scharset;
         isRollingIp = bRollingIp;
@@ -36,7 +46,7 @@ public class UrlHelper {
             }catch (Exception e) {
                 e.printStackTrace();
             }
-            int index = (int)Math.random()*((proxies.size() - 0) + 1);
+            int index = (int)(Math.random()*proxies.size());
             MyProxy newProxy = proxies.get(index);
             proxyHost = newProxy.proxyHost;
             proxyPort = newProxy.proxyPort;
@@ -53,7 +63,6 @@ public class UrlHelper {
         URL localURL = new URL(null, url, new sun.net.www.protocol.https.Handler());
         URLConnection connection = this.openConnection(localURL);
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-
         HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
 
         //httpURLConnection.setRequestProperty("Accept-Charset", charset);
@@ -66,8 +75,17 @@ public class UrlHelper {
         StringBuffer resultBuffer = new StringBuffer();
         String tempLine = null;
         //响应失败
-        if (httpURLConnection.getResponseCode() >= 300) {
-            throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+        try {
+            if (httpURLConnection.getResponseCode() >= 300) {
+                System.out.println("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+                switchProxy();
+                doGet(url);
+                //throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+            }
+        }catch (java.net.ConnectException e){
+            System.out.println("connection time out");
+            switchProxy();
+            doGet(url);
         }
 
         try {
@@ -99,7 +117,6 @@ public class UrlHelper {
             }
 
         }
-        //return new String(resultBuffer.toString().getBytes(),"GBK");
         return resultBuffer.toString();
     }
 
@@ -108,7 +125,7 @@ public class UrlHelper {
 
         if (isRollingIp&&requestCounter>=10){
             switchProxy();
-            requestCounter=0;
+
         }
         if (proxyHost != null && proxyPort != null) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
@@ -117,6 +134,7 @@ public class UrlHelper {
         } else {
             connection = localURL.openConnection();
         }
+        System.out.println("do get...,count of request is "+requestCounter);
         return connection;
     }
 
@@ -126,10 +144,11 @@ public class UrlHelper {
     }
 
     private void switchProxy(){
-        int index = (int)Math.random()*((proxies.size() - 0) + 1);
+        int index = (int)(Math.random()*proxies.size());
         MyProxy newProxy = proxies.get(index);
         proxyHost = newProxy.proxyHost;
         proxyPort = newProxy.proxyPort;
-        System.out.print("switch proxy to :"+proxyHost+","+proxyPort);
+        requestCounter=0;
+        System.out.println("switch proxy to :"+proxyHost+","+proxyPort+";");
     }
 }
