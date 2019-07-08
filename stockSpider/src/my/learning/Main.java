@@ -21,11 +21,11 @@ public class Main {
 
             ArrayList stockCodes = StockListReader.ReadFile(root+"stockList.txt");
             realStock = new RealStock();
-            for(int i=250;i<270;i++){
+            for(int i=265;i<300;i++){
                 String stockCode = stockCodes.get(i).toString();
                 //String stockHistory = realStock.getStockHistory(stockCode);
                 //mysqlHelper.updateHistory(stockCode,stockHistory);
-                Thread.sleep((long)(Math.random() * 1000));
+                Thread.sleep((long)(Math.random() * 20000));
                 System.out.println("number:..."+i);
                 mysqlHelper.updateDivident(stockCode,realStock.getHistoryDividend(stockCode));
             }

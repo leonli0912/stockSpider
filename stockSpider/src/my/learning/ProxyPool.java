@@ -14,12 +14,17 @@ public class ProxyPool {
         prepareProxy();
     }
     private void prepareProxy(){
-        try {
-            String proxyHtml = new UrlHelper("utf-8").doGet("https://www.xicidaili.com/nn/");
-            parseHtml(proxyHtml);
-        }catch (java.lang.Exception e){
-            System.out.print(e);
+        int page = 1;
+        while (page<=1){
+            try {
+                String proxyHtml = new UrlHelper("utf-8").doGet("https://www.xicidaili.com/nn/"+page);
+                parseHtml(proxyHtml);
+                page++;
+            }catch (java.lang.Exception e){
+                System.out.print(e);
+            }
         }
+
 
     }
     private void parseHtml(String htmlText) {
@@ -27,6 +32,9 @@ public class ProxyPool {
         Elements allElements = document.select("#ip_list > tbody>tr") ;
         for (Element element :allElements){
             if (element.children().first().tag().toString().equals("th")){
+                continue;
+            }
+            if (element.child(8).text().endsWith("分钟")){
                 continue;
             }
             proxies.add(new MyProxy(element.child(1).text(),element.child(2).text())) ;
