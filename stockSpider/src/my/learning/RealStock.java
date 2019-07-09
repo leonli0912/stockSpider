@@ -9,10 +9,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class RealStock {
-    UrlHelper urlHelper = new UrlHelper("GBK",true);
-
+    private UrlHelper urlHelper;
+    private MySqlHelper mysql ;
     public RealStock() {
-
+        urlHelper = new UrlHelper("GBK",true);
+        mysql = new MySqlHelper(DBConfiguration.url, DBConfiguration.userName, DBConfiguration.password);
     }
 
     public String getStockHistory(String stockCode) throws java.lang.Exception {
@@ -51,6 +52,25 @@ public class RealStock {
         return result;
     }
 
+    public void updateHistoryDividend(String stockCode,String[] dividends)throws java.sql.SQLException{
+        final String sqlSharedStateMement = "insert into myschema.stockdividend(id,dividendId,dividendDetail)" +
+                "value('" + stockCode + "',";
+        int divId = 0;
+        if (dividends == null){
+            return;
+        }
+        for (int i=0;i<dividends.length;i++){
+            if (dividends[i]!=null){
+                String sqlStatemement = sqlSharedStateMement + divId + "," + "'"+dividends[i].trim() +"'"+ ")";
+                mysql.execute(sqlStatemement);
+                divId++;
+            }
+        }
+    }
+
+    public void destroy(){
+        mysql.destory();
+    }
     private String[] ParseHtml(String htmlText) {
         String[] result = new String[100];
         Document document = Jsoup.parse(htmlText);
@@ -80,4 +100,6 @@ public class RealStock {
         System.out.print("getStockHistory:" + stockCode + "\n");
         return response;
     }
+
+
 }

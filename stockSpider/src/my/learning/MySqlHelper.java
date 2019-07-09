@@ -11,7 +11,6 @@ import java.util.Objects;
 public class MySqlHelper {
     Connection connection;
     Statement statement;
-    ResultSet resultSet;
 
     public MySqlHelper(String url, String username, String password) {
         try {
@@ -106,4 +105,18 @@ public class MySqlHelper {
             }
         }
     }
+
+    public void execute(String sql)throws java.sql.SQLException{
+        System.out.println("excute sqlStateMement:" + sql);
+        statement.execute(sql);
+    }
+
+    public void destory(){
+        try {
+            connection.close();
+        }catch (java.sql.SQLException e){
+            //
+        }
+    }
+
 }

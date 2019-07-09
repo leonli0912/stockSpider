@@ -22,40 +22,42 @@ public class UrlHelper {
         proxyPort = 8080;
         proxyHost = null;//"proxy.sin.sap.corp";
         isRollingIp = false;
-        requestCounter=0;
+        requestCounter = 0;
     }
 
     /**
      * constructor
+     *
      * @param scharset
      */
-    public UrlHelper(String scharset){
+    public UrlHelper(String scharset) {
         charset = scharset;
     }
 
     /**
      * overload constructor with rolling ip option
+     *
      * @param scharset
      * @param bRollingIp
      */
-    public UrlHelper(String scharset,Boolean bRollingIp){
+    public UrlHelper(String scharset, Boolean bRollingIp) {
         charset = scharset;
         isRollingIp = bRollingIp;
-        if (bRollingIp){
+        if (bRollingIp) {
             try {
                 initProxyPool();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            int index = (int)(Math.random()*proxies.size());
+            int index = (int) (Math.random() * proxies.size());
             currentProxy = proxies.get(index);
             proxyHost = currentProxy.proxyHost;
             proxyPort = currentProxy.proxyPort;
-            System.out.print("set proxy to :"+proxyHost+","+proxyPort);
+            System.out.print("set proxy to :" + proxyHost + "," + proxyPort);
         }
     }
 
-    public void setCharset(String scharset){
+    public void setCharset(String scharset) {
         charset = scharset;
     }
 
@@ -64,7 +66,7 @@ public class UrlHelper {
         URL localURL = new URL(null, url, new sun.net.www.protocol.https.Handler());
         URLConnection connection = this.openConnection(localURL);
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-        HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
+        HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
         //httpURLConnection.setRequestProperty("Accept-Charset", charset);
         //httpURLConnection.setRequestProperty("Content-Type", "application/javascript");
@@ -82,43 +84,42 @@ public class UrlHelper {
                 proxies.remove(currentProxy);
                 switchProxy();
                 doGet(url);
-                //throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+                }
+            try {
+                inputStream = httpURLConnection.getInputStream();
+                if (charset == "GBK") {
+                    inputCharset = "GB2312";
+                } else {
+                    inputCharset = charset;
+                }
+                inputStreamReader = new InputStreamReader(inputStream, inputCharset);//GB2312 for get historyPrice
+                reader = new BufferedReader(inputStreamReader);
+
+                while ((tempLine = reader.readLine()) != null) {
+                    resultBuffer.append(tempLine);
+                }
+
             }
-        }catch (java.net.ConnectException e){
+            finally {
+
+                if (reader != null) {
+                    reader.close();
+                }
+
+                if (inputStreamReader != null) {
+                    inputStreamReader.close();
+                }
+
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+            }
+        } catch (java.net.ConnectException e) {
             System.out.println("connection time out");
             proxies.remove(currentProxy);
             switchProxy();
             doGet(url);
-        }
-
-        try {
-            inputStream = httpURLConnection.getInputStream();
-            if (charset == "GBK"){
-                inputCharset = "GB2312";
-            }else{
-                inputCharset = charset;
-            }
-            inputStreamReader = new InputStreamReader(inputStream,inputCharset);//GB2312 for get historyPrice
-            reader = new BufferedReader(inputStreamReader);
-
-            while ((tempLine = reader.readLine()) != null) {
-                resultBuffer.append(tempLine);
-            }
-
-        } finally {
-
-            if (reader != null) {
-                reader.close();
-            }
-
-            if (inputStreamReader != null) {
-                inputStreamReader.close();
-            }
-
-            if (inputStream != null) {
-                inputStream.close();
-            }
-
         }
         return resultBuffer.toString();
     }
@@ -126,7 +127,7 @@ public class UrlHelper {
     private URLConnection openConnection(URL localURL) throws IOException {
         URLConnection connection;
 
-        if (isRollingIp&&requestCounter>=10){
+        if (isRollingIp && requestCounter >= 10) {
             switchProxy();
 
         }
@@ -137,7 +138,7 @@ public class UrlHelper {
         } else {
             connection = localURL.openConnection();
         }
-        System.out.println("do get...,count of request is "+requestCounter);
+        System.out.println("do get...,count of request is " + requestCounter);
         return connection;
     }
 
@@ -146,12 +147,12 @@ public class UrlHelper {
         proxies = pp.getProxies();
     }
 
-    private void switchProxy(){
-        int index = (int)(Math.random()*proxies.size());
+    private void switchProxy() {
+        int index = (int) (Math.random() * proxies.size());
         currentProxy = proxies.get(index);
-        proxyHost = currentProxy.proxyHost;
-        proxyPort = currentProxy.proxyPort;
-        requestCounter=0;
-        System.out.println("switch proxy to :"+proxyHost+","+proxyPort+";");
+        proxyHost = "proxy.wdf.sap.corp";//currentProxy.proxyHost;
+        proxyPort = 8080;//currentProxy.proxyPort;
+        requestCounter = 0;
+        System.out.println("switch proxy to :" + proxyHost + "," + proxyPort + ";");
     }
 }
