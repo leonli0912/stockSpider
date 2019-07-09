@@ -14,13 +14,16 @@ public class ProxyPool {
         prepareProxy();
     }
     private void prepareProxy(){
-        try {
-            String proxyHtml = new UrlHelper("utf-8").doGet("https://www.xicidaili.com/nn/");
-            parseHtml(proxyHtml);
-        }catch (java.lang.Exception e){
-            System.out.print(e);
+        int page = 1;
+        while(page<=10){
+            try {
+                String proxyHtml = new UrlHelper("utf-8").doGet("https://www.xicidaili.com/nn/"+page);
+                parseHtml(proxyHtml);
+            }catch (java.lang.Exception e){
+                System.out.print(e);
+            }
+            page++;
         }
-
     }
     private void parseHtml(String htmlText) {
         Document document = Jsoup.parse(htmlText);
@@ -32,7 +35,6 @@ public class ProxyPool {
             proxies.add(new MyProxy(element.child(1).text(),element.child(2).text())) ;
             System.out.println("proxy pool add "+ element.child(1).text()+':'+element.child(2).text());
         }
-
     }
     public ArrayList<MyProxy> getProxies(){
         return proxies;

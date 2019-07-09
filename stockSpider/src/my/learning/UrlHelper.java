@@ -12,6 +12,7 @@ public class UrlHelper {
     private String charset;
     private String proxyHost;
     private Integer proxyPort;
+    private MyProxy currentProxy;
     private boolean isRollingIp;
     private static Integer requestCounter;
     private ArrayList<MyProxy> proxies;
@@ -47,9 +48,9 @@ public class UrlHelper {
                 e.printStackTrace();
             }
             int index = (int)(Math.random()*proxies.size());
-            MyProxy newProxy = proxies.get(index);
-            proxyHost = newProxy.proxyHost;
-            proxyPort = newProxy.proxyPort;
+            currentProxy = proxies.get(index);
+            proxyHost = currentProxy.proxyHost;
+            proxyPort = currentProxy.proxyPort;
             System.out.print("set proxy to :"+proxyHost+","+proxyPort);
         }
     }
@@ -78,12 +79,14 @@ public class UrlHelper {
         try {
             if (httpURLConnection.getResponseCode() >= 300) {
                 System.out.println("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+                proxies.remove(currentProxy);
                 switchProxy();
                 doGet(url);
                 //throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
             }
         }catch (java.net.ConnectException e){
             System.out.println("connection time out");
+            proxies.remove(currentProxy);
             switchProxy();
             doGet(url);
         }
@@ -145,9 +148,9 @@ public class UrlHelper {
 
     private void switchProxy(){
         int index = (int)(Math.random()*proxies.size());
-        MyProxy newProxy = proxies.get(index);
-        proxyHost = newProxy.proxyHost;
-        proxyPort = newProxy.proxyPort;
+        currentProxy = proxies.get(index);
+        proxyHost = currentProxy.proxyHost;
+        proxyPort = currentProxy.proxyPort;
         requestCounter=0;
         System.out.println("switch proxy to :"+proxyHost+","+proxyPort+";");
     }
