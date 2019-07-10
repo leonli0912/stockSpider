@@ -147,8 +147,8 @@ public class UrlHelper {
     private void switchProxy() {
         int index = (int) (Math.random() * proxies.size());
         currentProxy = proxies.get(index);
-        proxyHost = "113.120.36.104";//currentProxy.proxyHost;
-        proxyPort = 808;//currentProxy.proxyPort;
+        proxyHost = currentProxy.proxyHost;
+        proxyPort = currentProxy.proxyPort;
         requestCounter = 0;
         System.out.println("switch proxy to :" + proxyHost + "," + proxyPort + ";"+"left:"+proxies.size());
     }
