@@ -21,6 +21,7 @@ public class ProxyPool {
                 String proxyHtml = new UrlHelper("utf-8").doGet("https://www.xicidaili.com/nn/"+page);
                 parseHtml(proxyHtml);
             }catch (java.lang.Exception e){
+                e.printStackTrace();
                 System.out.print(e);
             }
             page++;
@@ -31,9 +32,6 @@ public class ProxyPool {
         Elements allElements = document.select("#ip_list > tbody>tr") ;
         for (Element element :allElements){
             if (element.children().first().tag().toString().equals("th")){
-                continue;
-            }
-            if (element.child(8).text().endsWith("分钟")){
                 continue;
             }
             proxies.add(new MyProxy(element.child(1).text(),element.child(2).text())) ;

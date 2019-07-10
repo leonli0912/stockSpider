@@ -65,7 +65,7 @@ public class UrlHelper {
 
         URL localURL = new URL(null, url, new sun.net.www.protocol.https.Handler());
         URLConnection connection = this.openConnection(localURL);
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36");
         HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
         //httpURLConnection.setRequestProperty("Accept-Charset", charset);
@@ -83,43 +83,40 @@ public class UrlHelper {
                 System.out.println("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
                 proxies.remove(currentProxy);
                 switchProxy();
-                doGet(url);
-                }
-            try {
-                inputStream = httpURLConnection.getInputStream();
-                if (charset == "GBK") {
-                    inputCharset = "GB2312";
-                } else {
-                    inputCharset = charset;
-                }
-                inputStreamReader = new InputStreamReader(inputStream, inputCharset);//GB2312 for get historyPrice
-                reader = new BufferedReader(inputStreamReader);
-
-                while ((tempLine = reader.readLine()) != null) {
-                    resultBuffer.append(tempLine);
-                }
-
+                resultBuffer = new StringBuffer(doGet(url));
             }
-            finally {
 
-                if (reader != null) {
-                    reader.close();
-                }
-
-                if (inputStreamReader != null) {
-                    inputStreamReader.close();
-                }
-
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-
+            inputStream = httpURLConnection.getInputStream();
+            if (charset == "GBK") {
+                inputCharset = "GB2312";
+            } else {
+                inputCharset = charset;
             }
-        } catch (java.net.ConnectException e) {
+            inputStreamReader = new InputStreamReader(inputStream, inputCharset);//GB2312 for get historyPrice
+            reader = new BufferedReader(inputStreamReader);
+
+            while ((tempLine = reader.readLine()) != null) {
+                resultBuffer.append(tempLine);
+            }
+        }catch (javax.net.ssl.SSLHandshakeException e){
+            System.out.println("SSH handshake error");
+
+        }
+        catch (java.net.ConnectException e) {
             System.out.println("connection time out");
             proxies.remove(currentProxy);
             switchProxy();
-            doGet(url);
+            resultBuffer = new StringBuffer(doGet(url));
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+            if (inputStreamReader != null) {
+                inputStreamReader.close();
+            }
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
         return resultBuffer.toString();
     }
@@ -150,9 +147,9 @@ public class UrlHelper {
     private void switchProxy() {
         int index = (int) (Math.random() * proxies.size());
         currentProxy = proxies.get(index);
-        proxyHost = "proxy.wdf.sap.corp";//currentProxy.proxyHost;
-        proxyPort = 8080;//currentProxy.proxyPort;
+        proxyHost = "113.120.36.104";//currentProxy.proxyHost;
+        proxyPort = 808;//currentProxy.proxyPort;
         requestCounter = 0;
-        System.out.println("switch proxy to :" + proxyHost + "," + proxyPort + ";");
+        System.out.println("switch proxy to :" + proxyHost + "," + proxyPort + ";"+"left:"+proxies.size());
     }
 }
