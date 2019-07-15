@@ -16,9 +16,7 @@ public class RealStock {
 
     }
     private void initSqlHelper(){
-        if (mysql == null){
             mysql = new MySqlHelper(DBConfiguration.url, DBConfiguration.userName, DBConfiguration.password);
-        }
     }
     public String getStockHistory(String stockCode) throws java.lang.Exception {
         return getStockHistory(stockCode, 30);
