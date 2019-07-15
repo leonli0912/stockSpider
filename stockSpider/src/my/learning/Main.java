@@ -17,15 +17,16 @@ public class Main {
 
             String root = realStock.getClass().getResource("/").getPath();
             ArrayList stockCodes = StockListReader.ReadFile(root+"stockList.txt");
-            for(int i=882;i<1000;i++){
+            for(int i=2136;i<3000;i++){
                 String stockCode = stockCodes.get(i).toString();
                 //String stockHistory = realStock.getStockHistory(stockCode);
                 //mysqlHelper.updateHistory(stockCode,stockHistory);
-                Thread.sleep((long)(Math.random() * 20000));
-                System.out.println("number:..."+i);
+                //Thread.sleep((long)(Math.random() * 2000));
+
+                System.out.println("number:..."+i+" stock code: "+stockCode);
                 realStock.updateHistoryDividend(stockCode,realStock.getHistoryDividend(stockCode));
             }
-            realStock.destroy();
+
         } catch (Exception e) {
             System.out.println("error occurs...");
             e.printStackTrace();

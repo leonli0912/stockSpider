@@ -13,9 +13,13 @@ public class RealStock {
     private MySqlHelper mysql ;
     public RealStock() {
         urlHelper = new UrlHelper("GBK",true);
-        mysql = new MySqlHelper(DBConfiguration.url, DBConfiguration.userName, DBConfiguration.password);
-    }
 
+    }
+    private void initSqlHelper(){
+        if (mysql == null){
+            mysql = new MySqlHelper(DBConfiguration.url, DBConfiguration.userName, DBConfiguration.password);
+        }
+    }
     public String getStockHistory(String stockCode) throws java.lang.Exception {
         return getStockHistory(stockCode, 30);
     }
@@ -48,6 +52,7 @@ public class RealStock {
         } catch (java.lang.Exception e) {
             e.printStackTrace();
             System.out.print("Get History Dividend Failed");
+            return null;
         }
         result = ParseHtml(rawHtml);
         return result;
@@ -57,6 +62,7 @@ public class RealStock {
         final String sqlSharedStateMement = "insert into myschema.stockdividend(id,dividendId,dividendDetail)" +
                 "value('" + stockCode + "',";
         final String querySql = "select * from myschema.stockdividend where id ='"+stockCode + "'";
+        initSqlHelper();
         int divId = 0;
         if (dividends == null){
             return;
@@ -70,9 +76,10 @@ public class RealStock {
                 }
             }
         }
+        destroySqlHelper();
     }
 
-    public void destroy(){
+    private void destroySqlHelper(){
         mysql.destory();
     }
     private String[] ParseHtml(String htmlText) {
