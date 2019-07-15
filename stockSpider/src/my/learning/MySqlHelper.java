@@ -115,7 +115,8 @@ public class MySqlHelper {
         System.out.println("excute sqlStateMement:" + sql);
         ResultSet queryDateResultSet =statement.executeQuery(sql);
         if (queryDateResultSet != null){
-            return queryDateResultSet.getFetchSize();
+            queryDateResultSet.last();
+            return  queryDateResultSet.getRow();
         }else {
             return 0;
         }
