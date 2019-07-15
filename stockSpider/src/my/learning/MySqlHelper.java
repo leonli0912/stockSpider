@@ -111,6 +111,16 @@ public class MySqlHelper {
         statement.execute(sql);
     }
 
+    public int executeQuery(String sql)throws java.sql.SQLException{
+        System.out.println("excute sqlStateMement:" + sql);
+        ResultSet queryDateResultSet =statement.executeQuery(sql);
+        if (queryDateResultSet != null){
+            return queryDateResultSet.getFetchSize();
+        }else {
+            return 0;
+        }
+    }
+
     public void destory(){
         try {
             connection.close();

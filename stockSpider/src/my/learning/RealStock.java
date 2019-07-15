@@ -46,6 +46,7 @@ public class RealStock {
         try {
             rawHtml = getHistoryDividendRaw(stockCode);
         } catch (java.lang.Exception e) {
+            e.printStackTrace();
             System.out.print("Get History Dividend Failed");
         }
         result = ParseHtml(rawHtml);
@@ -55,15 +56,18 @@ public class RealStock {
     public void updateHistoryDividend(String stockCode,String[] dividends)throws java.sql.SQLException{
         final String sqlSharedStateMement = "insert into myschema.stockdividend(id,dividendId,dividendDetail)" +
                 "value('" + stockCode + "',";
+        final String querySql = "select * from myschema.stockdividend where id ='"+stockCode + "'";
         int divId = 0;
         if (dividends == null){
             return;
         }
         for (int i=0;i<dividends.length;i++){
             if (dividends[i]!=null){
+                if (mysql.executeQuery(querySql)==0){
                 String sqlStatemement = sqlSharedStateMement + divId + "," + "'"+dividends[i].trim() +"'"+ ")";
                 mysql.execute(sqlStatemement);
                 divId++;
+                }
             }
         }
     }
